@@ -5,103 +5,192 @@ const height = 1000;
 const dir = __dirname;
 
 const description = "This is an NFT made by the coolest generative code";
-const baseImageUri= "https://hashlips/nft";
+const baseImageUri = "https://hashlips/nft";
 const startEditionFrom = 1;
 const endEditionAt = 10;
-const editionSize = 10;
+const editionSize = 100;
 
-const rarityWeights = [
+const raceWeights = [
     {
-        value: "super_rare",
+        value: "skull",
         from: 1,
-        to: 2,
-    },
-    {
-        value: "rare",
-        from: 3,
-        to: 5,
-    },
-    {
-        value: "original",
-        from: 6,
-        to: editionSize,
+        to: 10,
     }
-];
+]
 
-
-const cleanName = (_str) => {
-    let name = _str.slice(0, -4);
-    return name;
-}
-
-
-const getElements = (path) => {
-    return fs
-      .readdirSync(path)
-      .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
-      .map((i) => {
-        return {
-          name: cleanName(i),
-          path: `${path}/${i}`,
-        };
-      });
-  };
-
-const layers = [
-    {
-        elements: {
-            original: getElements(`${dir}/ball/original`),
-            rare: getElements(`${dir}/ball/rare`),
-            super_rare: getElements(`${dir}/ball/super_rare`)
-        },
-        position: { x: 0, y: 0 },
-        size: { width: width, height: height }
+const races = {
+    skull: {
+        name: "Skull",
+        layers: [
+            {
+                name: "Background",
+                elements: [
+                    {
+                        id: 0,
+                        name: "Light blue",
+                        path: `${dir}/1-background/LightBlue.png`,
+                        weight: 100,
+                    },
+                    {
+                        id: 1,
+                        name: "Orange",
+                        path: `${dir}/1-background/Orange.png`,
+                        weight: 80,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Suit",
+                elements: [
+                    {
+                        id: 0,
+                        name: "Regular",
+                        path: `${dir}/2-suit/Regular.png`,
+                        weight: 100,
+                    },
+                    {
+                        id: 1,
+                        name: "Orange",
+                        path: `${dir}/2-suit/Orange.png`,
+                        weight: 20,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Shoulder",
+                elements: [
+                    {
+                        id: 0,
+                        name: "LunaFlag",
+                        path: `${dir}/3-shoulder/LunaFlag.png`,
+                        weight: 100,
+                    },
+                    {
+                        id: 1,
+                        name: "USA",
+                        path: `${dir}/3-shoulder/USA.png`,
+                        weight: 90,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Pin",
+                elements: [
+                    {
+                        id: 0,
+                        name: "Smiley",
+                        path: `${dir}/4-pin/Smiley.png`,
+                        weight: 100,
+                    },
+                    {
+                        id: 1,
+                        name: "LunaBluePin",
+                        path: `${dir}/4-pin/LunaBluePin.png`,
+                        weight: 90,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Race",
+                elements: [
+                    {
+                        id: 0,
+                        name: "Skull",
+                        path: `${dir}/5-skin/Skull.png`,
+                        weight: 100,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Facial hair",
+                elements: [
+                    {
+                        id: 0,
+                        name: "No facial hair",
+                        path: `${dir}/6-facial-hair/NoFacialHair.png`,
+                        weight: 100,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Mask",
+                elements: [
+                    {
+                        id: 0,
+                        name: "No mask",
+                        path: `${dir}/7-mask/NoMask.png`,
+                        weight: 100,
+                    },
+                    {
+                        id: 1,
+                        name: "Medical",
+                        path: `${dir}/7-mask/mask.png`,
+                        weight: 5,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Hair",
+                elements: [
+                    {
+                        id: 0,
+                        name: "Blonde bun",
+                        path: `${dir}/8-hair/BlondeBun.png`,
+                        weight: 100,
+                    },
+                    {
+                        id: 1,
+                        name: "Pink",
+                        path: `${dir}/8-hair/Pink.png`,
+                        weight: 91,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Accessories",
+                elements: [
+                    {
+                        id: 0,
+                        name: "No accessories",
+                        path: `${dir}/9-accessories/NoAcc.png`,
+                        weight: 100,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+            {
+                name: "Headwear",
+                elements: [
+                    {
+                        id: 0,
+                        name: "Glass dome",
+                        path: `${dir}/10-headwear/GlassDome.png`,
+                        weight: 100,
+                    },
+                ],
+                position: { x: 0, y: 0 },
+                size: { width: width, height: height },
+            },
+        ],
     },
-    {
-        elements: {
-            original: getElements(`${dir}/eye color/original`),
-            rare: getElements(`${dir}/eye color/rare`),
-            super_rare: getElements(`${dir}/eye color/super_rare`)
-        },
-        position: { x: 0, y: 0 },
-        size: { width: width, height: height }
-    },
-    {
-        elements: {
-            original: getElements(`${dir}/iris/original`),
-            rare: getElements(`${dir}/iris/rare`),
-            super_rare: getElements(`${dir}/iris/super_rare`)
-        },
-        position: { x: 0, y: 0 },
-        size: { width: width, height: height }
-    },
-    {
-        elements: {
-            original: getElements(`${dir}/shine/original`),
-            rare: getElements(`${dir}/shine/rare`),
-            super_rare: getElements(`${dir}/shine/super_rare`)
-        },
-        position: { x: 0, y: 0 },
-        size: { width: width, height: height }
-    },
-    {
-        elements: {
-            original: getElements(`${dir}/bottom lid/original`),
-            rare: getElements(`${dir}/bottom lid/rare`),
-            super_rare: getElements(`${dir}/bottom lid/super_rare`)
-        },
-        position: { x: 0, y: 0 },
-        size: { width: width, height: height }
-    },
-    {
-        elements: {
-            original: getElements(`${dir}/top lid/original`),
-            rare: getElements(`${dir}/top lid/rare`),
-            super_rare: getElements(`${dir}/top lid/super_rare`)
-        },
-        position: { x: 0, y: 0 },
-        size: { width: width, height: height }
-    }
-];
+};
 
-module.exports = { layers, width, height, description, baseImageUri, editionSize, startEditionFrom, endEditionAt, rarityWeights };
+
+module.exports = {races, width, height, description, baseImageUri, editionSize, startEditionFrom, endEditionAt, raceWeights };

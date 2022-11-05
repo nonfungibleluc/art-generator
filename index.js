@@ -2,7 +2,7 @@ const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const canvas = createCanvas(1000, 1000);
 const ctx = canvas.getContext("2d");
-const { layers, width, height, description, baseImageUri, editionSize, startEditionFrom, endEditionAt, rarityWeights } = require("./input/config.js");
+const { races, width, height, description, baseImageUri, editionSize, startEditionFrom, endEditionAt, raceWeights } = require("./input/config.js");
 
 var metadataList = [];
 var attributesList = [];
@@ -61,8 +61,8 @@ const addMetadata = (_dna, _edition) => {
 const addAttributes = (_element) => {
     let selectedElement = _element.layer.selectedElement;
     attributesList.push({
-        name: selectedElement.name,
-        rarity: selectedElement.rarity
+        trait_type: _element.layer.name,
+        value: selectedElement.name
     })
 }
 
@@ -95,11 +95,11 @@ const drawElement = (_element) => {
 
 // -------------------- DNA Creation and Handling ------------------------ //
 
-const construcLayerToDna = (_dna = [], _layers = [], _rarity) => {
-    let mappedDnaToLayers = _layers.map((layer, index) => {
-        let selectedElement = layer.elements[_rarity][_dna[index]]; 
+const construcLayerToDna = (_dna = [], _races = [], _race) => {
+    let mappedDnaToLayers = _races[_race].layers.map((layer, index) => {
+        let selectedElement = layer.elements.find(e => e.id == _dna[index]);
         return {
-            location: layer.location,
+            name: layer.name,
             position: layer.position,
             size: layer.size,
             selectedElement: selectedElement
@@ -108,15 +108,15 @@ const construcLayerToDna = (_dna = [], _layers = [], _rarity) => {
     return mappedDnaToLayers;
 };
 
-const getRarity = (_editionCount) => {
-    let rarity = "";
+const getRace = (_editionCount) => {
+    let race = "No Race";
     
-    rarityWeights.forEach(rarityWeight => {
-        if(_editionCount >= rarityWeight.from && _editionCount <= rarityWeight.to){
-            rarity = rarityWeight.value;
+    raceWeights.forEach(raceWeight => {
+        if(_editionCount >= raceWeight.from && _editionCount <= raceWeight.to){
+            race = raceWeight.value;
         }
     });
-    return rarity
+    return race
 }
 
 
@@ -126,10 +126,16 @@ const isDnaUnique = (_dnaList = [], _dna = []) => {
 };
 
 
-const createDna = (_layers, _rarity) => {
+const createDna = (_races, _race) => {
     let randNum = [];
-    _layers.forEach((layer) => {
-        let num = Math.floor(Math.random() * layer.elements[_rarity].length);
+    _races[_race].layers.forEach((layer) => {
+        let randElementNum = Math.floor(Math.random() * 100);
+        let num = 0;
+        layer.elements.forEach(element => {
+            if(randElementNum >= 100 - element.weight){
+                num = element.id;
+            }
+        });
         randNum.push(num);
     });
     return randNum;
@@ -142,12 +148,12 @@ const startCreating = async () => {
     writeMetaData("");
     let editionCount = startEditionFrom;
     while (editionCount <= endEditionAt) {
-        let rarity = getRarity(editionCount);
-        let newDna = createDna(layers, rarity);
+        let race = getRace(editionCount);
+        let newDna = createDna(races, race);
         if (isDnaUnique(dnaList, newDna)) {
-            let results = construcLayerToDna(newDna, layers, rarity);
+            let results = construcLayerToDna(newDna, races, race);
             let loadedElements = []; // promise array
-            results.forEach( layer => {
+            results.forEach(layer => {
                 loadedElements.push(loadLayerImg(layer));
             });
             await Promise.all(loadedElements).then(elementArray => {
@@ -159,7 +165,7 @@ const startCreating = async () => {
                 signImage(`#${editionCount}`);
                 saveImage(editionCount);
                 addMetadata(newDna, editionCount);
-                console.log(`Created edition: ${editionCount} with DNA ${newDna} and rarity ${rarity}`);
+                console.log(`Created edition: ${editionCount} with DNA ${newDna} and race ${race}`);
             });
             dnaList.push(newDna);
             editionCount++;
